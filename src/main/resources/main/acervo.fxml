@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<BorderPane prefWidth="1000.0" prefHeight="800.0"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.aula.AcervoController"
+            styleClass="root">
+
+    <!-- TÍTULO -->
+    <top>
+        <Label text="Acervo de Livros"
+               styleClass="titulo"
+               BorderPane.alignment="CENTER">
+            <padding>
+                <Insets top="20" bottom="20"/>
+            </padding>
+        </Label>
+    </top>
+
+    <!-- CONTEÚDO -->
+    <center>
+
+        <VBox alignment="CENTER" spacing="20">
+
+            <!-- BUSCA -->
+            <TextField fx:id="buscaField"
+                       promptText="Pesquisar livro..."
+                       onKeyReleased="#buscarLivro"
+                       maxWidth="300"/>
+
+            <!-- LISTA -->
+            <ListView fx:id="listaLivros"
+                      prefWidth="400"
+                      prefHeight="400"
+                      styleClass="lista-livros"/>
+
+            <!-- BOTÃO (opcional) -->
+            <Button text="Selecionar Livro"
+                    onAction="#selecionarLivro"
+                    styleClass="button-emprestimo"/>
+
+        </VBox>
+
+    </center>
+
+</BorderPane>

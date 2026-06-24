@@ -1,0 +1,57 @@
+/* FUNDO */
+.root {
+    -fx-background-image: url("/imagens/reserva.png");
+    -fx-background-size: cover;
+}
+
+/* TÍTULO */
+.titulo {
+    -fx-text-fill: white;
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+}
+
+/* CAIXA BRANCA */
+.caixa-branca {
+    -fx-background-color: rgba(255, 255, 255, 0.8);
+    -fx-background-radius: 20;
+    -fx-padding: 20;
+    -fx-spacing: 10;
+}
+
+/* SUBTÍTULO */
+.subtitulo {
+    -fx-text-fill: #2C1B12;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+/* LISTA */
+.lista-livros {
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+    -fx-padding: 5;
+}
+
+/* ITEM SELECIONADO */
+.list-cell:filled:selected {
+    -fx-background-color: #2C1B12;
+    -fx-text-fill: white;
+}
+
+/* BOTÃO */
+.button-emprestimo {
+    -fx-font-size: 14px;
+    -fx-text-fill: white;
+    -fx-background-color: #2C1B12;
+    -fx-background-radius: 20;
+    -fx-min-width: 200;
+    -fx-min-height: 40;
+    -fx-cursor: hand;
+}
+
+/* HOVER BOTÃO */
+.button-emprestimo:hover {
+    -fx-text-fill: rgba(0, 255, 188, 0.9);
+    -fx-effect: dropshadow(gaussian, rgba(0, 255, 188, 0.6), 20, 0, 0, 10);
+}

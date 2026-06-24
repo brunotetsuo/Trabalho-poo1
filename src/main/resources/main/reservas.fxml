@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane prefHeight="800.0" prefWidth="1000.0" styleClass="root" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aula.ReservasController">
+
+    <!-- TÍTULO -->
+    <top>
+        <Label styleClass="titulo" text="Livros Reservados" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets bottom="20.0" top="5.0" />
+            </padding>
+         <BorderPane.margin>
+            <Insets />
+         </BorderPane.margin>
+        </Label>
+    </top>
+
+    <!-- CONTEÚDO -->
+    <center>
+
+        <VBox alignment="CENTER" spacing="20">
+
+            <!-- CAIXA BRANCA -->
+            <VBox alignment="CENTER" prefHeight="400" prefWidth="500" spacing="10" styleClass="caixa-branca">
+
+                <Label styleClass="subtitulo" text="Reservas Atuais">
+               <font>
+                  <Font size="18.0" />
+               </font></Label>
+
+                <!-- LISTA -->
+                <ListView fx:id="listaReservados" prefHeight="300" prefWidth="450" styleClass="lista-livros" />
+
+            </VBox>
+
+            <!-- BOTÃO -->
+            <Button onAction="#devolverLivro" styleClass="button-emprestimo" text="Devolução do Livro" />
+
+        </VBox>
+
+    </center>
+
+</BorderPane>

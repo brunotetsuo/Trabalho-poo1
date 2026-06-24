@@ -1,0 +1,45 @@
+.root {
+    -fx-background-image: url('/imagens/login2.png');
+    -fx-background-size: cover;
+
+}
+
+.titulo {
+    -fx-text-fill: white;
+    -fx-text-size: 28;
+
+}
+
+.label-campo {
+    -fx-text-fill: white;
+    -fx-font-size: 14pt;
+}
+
+.campo {
+    -fx-background-color: black;
+    -fx-taxt-fill: white;
+    -fx-background-radius: 20;
+    -fx-padding: 10;
+}
+
+.botao-login {
+    -fx-text-fill: white;
+    -fx-font-size: 14pt;
+    -fx-background-color: black;
+    -fx-background-radius: 20;
+    -fx-cursor: hand;
+}
+
+.botao-login:hover {
+    -fx-text-fill: green;
+}
+
+.label-link {
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-cursor: hand;
+}
+
+.label-link:hover {
+    -fx-text-fill: red;
+}
