@@ -4,6 +4,8 @@
     import javafx.fxml.FXMLLoader;
     import javafx.scene.Scene;
     import javafx.stage.Stage;
+    import com.aula.util.JPAUtil;
+
     public class Main extends Application {
         public static void main(String[] args) {
             launch();
@@ -23,5 +25,10 @@
             stage.setMaxWidth(1000);
             stage.setMaxHeight(800);
             stage.show();
+        }
+
+        @Override
+        public void stop() {
+            JPAUtil.close();
         }
     }

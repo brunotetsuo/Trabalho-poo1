@@ -36,7 +36,7 @@
                <font>
                   <Font size="14.0" />
                </font></Label>
-            <TextField fx:id="comfirmaField" alignment="CENTER" layoutX="335.0" layoutY="480.0" maxWidth="350.0" promptText="Digite sua senha" styleClass="campo" />
+            <TextField fx:id="confirmaField" alignment="CENTER" layoutX="335.0" layoutY="480.0" maxWidth="350.0" promptText="Digite sua senha" styleClass="campo" />
             <HBox alignment="CENTER" prefHeight="49.0" prefWidth="1000.0">
                <children>
                   <VBox alignment="CENTER" prefHeight="50.0" prefWidth="200.0">
@@ -46,7 +46,11 @@
                               <Font size="14.0" />
                            </font>
                         </Label>
-                        <RadioButton mnemonicParsing="false" />
+                        <RadioButton fx:id="membroComumRadio" mnemonicParsing="false" selected="true">
+                           <toggleGroup>
+                              <ToggleGroup fx:id="tipoMembroGroup" />
+                           </toggleGroup>
+                        </RadioButton>
                      </children>
                   </VBox>
                   <VBox alignment="CENTER" prefHeight="50.0" prefWidth="200.0">
@@ -56,12 +60,12 @@
                               <Font size="14.0" />
                            </font>
                         </Label>
-                        <RadioButton mnemonicParsing="false" />
+                        <RadioButton fx:id="membroEspecialRadio" mnemonicParsing="false" toggleGroup="$tipoMembroGroup" />
                      </children>
                   </VBox>
                </children>
             </HBox>
-            <Button fx:id="registroButton" mnemonicParsing="false" styleClass="botao-registro" text="Registrar" />
+            <Button fx:id="registroButton" mnemonicParsing="false" styleClass="botao-registro" text="Registrar" onAction="#registroButton"/>
             <Label fx:id="linkLogin"
                    layoutX="458.0"
                    layoutY="500.0"

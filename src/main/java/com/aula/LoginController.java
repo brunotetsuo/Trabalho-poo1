@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import com.aula.model.BibliotecaDados;
 import com.aula.model.Usuario;
 import com.aula.util.JPAUtil;
 import jakarta.persistence.EntityManager;
@@ -84,6 +85,7 @@ public class LoginController {
 
         try {
             Usuario u = query.getSingleResult();
+            BibliotecaDados.setUsuarioLogado(u);
 
             mensagem.setText("Login OK!");
 
@@ -92,8 +94,8 @@ public class LoginController {
 
         } catch (Exception e) {
             mensagem.setText("Usuário ou senha inválidos");
+        } finally {
+            em.close();
         }
-
-        em.close();
     }
 }
