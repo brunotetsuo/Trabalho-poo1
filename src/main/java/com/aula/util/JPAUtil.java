@@ -7,7 +7,7 @@ import jakarta.persistence.Persistence;
 public class JPAUtil {
 
     private static final EntityManagerFactory emf =
-            Persistence.createEntityManagerFactory("meuPU");
+            Persistence.createEntityManagerFactory("bibliotecaPU");
 
     public static EntityManager getEntityManager() {
         return emf.createEntityManager();
