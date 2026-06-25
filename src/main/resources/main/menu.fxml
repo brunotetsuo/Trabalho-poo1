@@ -62,7 +62,7 @@
             <VBox alignment="CENTER_RIGHT" GridPane.rowIndex="1">
                <children>
                   <Button text="Devolução"
-                          onAction="#abrirRegistro"
+                          onAction="#abrirDevolucao"
                           styleClass="button-membro">
                      <font>
                         <Font size="18.0"/>

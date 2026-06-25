@@ -1,7 +1,7 @@
 package com.aula;
 
-import com.aula.model.BibliotecaDados;
-import com.aula.model.Livro;
+import com.aula.dao.AcervoDao;
+import com.aula.model.Acervo;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,34 +12,40 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+import java.util.List;
+
 public class AcervoController {
 
     @FXML
     private TextField buscaField;
 
     @FXML
-    private ListView<Livro> listaLivros;
+    private ListView<Acervo> listaAcervos;
+
+    private final AcervoDao acervoDao = new AcervoDao();
 
     @FXML
     public void initialize() {
-        listaLivros.getItems().setAll(BibliotecaDados.listarLivros());
+        listaAcervos.getItems().setAll(acervoDao.buscarTodos());
     }
 
     @FXML
     private void buscarLivro() {
-        listaLivros.getItems().setAll(BibliotecaDados.buscarLivros(buscaField.getText()));
+        String termo = buscaField.getText();
+        if (termo.isEmpty()) {
+            listaAcervos.getItems().setAll(acervoDao.buscarTodos());
+        } else {
+            listaAcervos.getItems().setAll(acervoDao.buscarPorTitulo(termo));
+        }
     }
 
     @FXML
     public void selecionarLivro(ActionEvent actionEvent) {
-        Livro livro = listaLivros.getSelectionModel().getSelectedItem();
-
-        if (livro == null) {
-            mostrarAlerta("Selecione um livro no acervo.");
+        Acervo acervo = listaAcervos.getSelectionModel().getSelectedItem();
+        if (acervo == null) {
+            mostrarAlerta("Selecione um item no acervo.");
             return;
         }
-
-        BibliotecaDados.setLivroSelecionado(livro);
         abrirTelaEmprestimo(actionEvent);
     }
 
@@ -48,7 +54,6 @@ public class AcervoController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/main/emprestimo.fxml"));
             Scene scene = new Scene(loader.load());
             scene.getStylesheets().add(getClass().getResource("/main/emprestimo.css").toExternalForm());
-
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             stage.setScene(scene);
             stage.show();
@@ -58,11 +63,11 @@ public class AcervoController {
         }
     }
 
-    private void mostrarAlerta(String mensagem) {
+    private void mostrarAlerta(String msg) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Acervo");
         alert.setHeaderText(null);
-        alert.setContentText(mensagem);
+        alert.setContentText(msg);
         alert.showAndWait();
     }
 }

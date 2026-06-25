@@ -1,15 +1,15 @@
 package com.aula;
 
+import com.aula.dao.MembroDao;
+import com.aula.model.Membro;
+import com.aula.util.Sessao;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import com.aula.model.BibliotecaDados;
-import com.aula.model.Usuario;
-import com.aula.util.JPAUtil;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.TypedQuery;
+
+import java.util.Optional;
 
 public class LoginController {
 
@@ -22,80 +22,53 @@ public class LoginController {
     @FXML
     private Label mensagem;
 
-    // 🔹 Abre menu
+    private final MembroDao membroDao = new MembroDao();
+
+    @FXML
+    public void fazerLogin() {
+        String login = usuarioField.getText();
+        String senha = senhaField.getText();
+
+        if (login.isEmpty() || senha.isEmpty()) {
+            mensagem.setText("Preencha todos os campos!");
+            return;
+        }
+
+        Optional<Membro> membro = membroDao.buscarPorLoginESenha(login, senha);
+
+        if (membro.isPresent()) {
+            Sessao.setMembroLogado(membro.get());
+            mensagem.setText("Login OK!");
+            abrirMenu();
+        } else {
+            mensagem.setText("Login ou senha invalidos!");
+        }
+    }
+
     private void abrirMenu() {
         try {
             Stage stage = (Stage) usuarioField.getScene().getWindow();
-
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/main/menu.fxml")
-            );
-
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/main/menu.fxml"));
             Scene scene = new Scene(loader.load());
-
-            scene.getStylesheets().add(
-                    getClass().getResource("/main/menu.css").toExternalForm()
-            );
-
+            scene.getStylesheets().add(getClass().getResource("/main/menu.css").toExternalForm());
             stage.setScene(scene);
             stage.show();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    // 🔹 Vai para cadastro
     @FXML
     private void linkCadastro() {
         try {
             Stage stage = (Stage) usuarioField.getScene().getWindow();
-
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/main/registro.fxml")
-            );
-
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/main/registro.fxml"));
             Scene scene = new Scene(loader.load());
-
-            scene.getStylesheets().add(
-                    getClass().getResource("/main/registro.css").toExternalForm()
-            );
-
+            scene.getStylesheets().add(getClass().getResource("/main/registro.css").toExternalForm());
             stage.setScene(scene);
             stage.show();
-
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    // 🔹 Login com banco
-    @FXML
-    public void fazerLogin() {
-
-        EntityManager em = JPAUtil.getEntityManager();
-
-        TypedQuery<Usuario> query = em.createQuery(
-                "SELECT u FROM Usuario u WHERE u.nome = :nome AND u.senha = :senha",
-                Usuario.class
-        );
-
-        query.setParameter("nome", usuarioField.getText());
-        query.setParameter("senha", senhaField.getText());
-
-        try {
-            Usuario u = query.getSingleResult();
-            BibliotecaDados.setUsuarioLogado(u);
-
-            mensagem.setText("Login OK!");
-
-            // 🔥 AGORA SIM abre o menu
-            abrirMenu();
-
-        } catch (Exception e) {
-            mensagem.setText("Usuário ou senha inválidos");
-        } finally {
-            em.close();
         }
     }
 }

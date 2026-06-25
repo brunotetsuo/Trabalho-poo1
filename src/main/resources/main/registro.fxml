@@ -17,31 +17,31 @@
    <children>
       <VBox alignment="CENTER" prefHeight="800.0" prefWidth="1000.0" spacing="20.0" styleClass="vbox" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Label styleClass="label-campo" text="Nome">
+            <Label styleClass="label-campo" text="Nome Completo">
                <font>
                   <Font size="14.0" />
                </font></Label>
-            <TextField fx:id="usuarioField" alignment="CENTER" maxWidth="350.0" promptText="Digite o nome de usuário" styleClass="campo" />
-            <Label alignment="CENTER" styleClass="label-campo" text="Email">
+            <TextField fx:id="nomeField" alignment="CENTER" maxWidth="350.0" promptText="Digite seu nome completo" styleClass="campo" />
+            <Label alignment="CENTER" styleClass="label-campo" text="Login">
                <font>
                   <Font size="14.0" />
                </font></Label>
-            <TextField fx:id="emailField" alignment="CENTER" maxWidth="350.0" promptText="Digite seu email" styleClass="campo" />
+            <TextField fx:id="loginField" alignment="CENTER" maxWidth="350.0" promptText="Digite seu login" styleClass="campo" />
             <Label layoutX="494.0" layoutY="337.0" styleClass="label-campo" text="Senha">
                <font>
                   <Font size="14.0" />
                </font></Label>
-            <TextField fx:id="senhaField" alignment="CENTER" layoutX="335.0" layoutY="356.0" maxWidth="350.0" promptText="Digite sua senha" styleClass="campo" />
+            <PasswordField fx:id="senhaField" alignment="CENTER" layoutX="335.0" layoutY="356.0" maxWidth="350.0" promptText="Digite sua senha" styleClass="campo" />
             <Label layoutX="494.0" layoutY="462.0" styleClass="label-campo" text="Confirme sua senha">
                <font>
                   <Font size="14.0" />
                </font></Label>
-            <TextField fx:id="confirmaField" alignment="CENTER" layoutX="335.0" layoutY="480.0" maxWidth="350.0" promptText="Digite sua senha" styleClass="campo" />
+            <PasswordField fx:id="confirmaField" alignment="CENTER" layoutX="335.0" layoutY="480.0" maxWidth="350.0" promptText="Confirme sua senha" styleClass="campo" />
             <HBox alignment="CENTER" prefHeight="49.0" prefWidth="1000.0">
                <children>
                   <VBox alignment="CENTER" prefHeight="50.0" prefWidth="200.0">
                      <children>
-                        <Label styleClass="label-campo" text="Menbro comum">
+                        <Label styleClass="label-campo" text="Membro comum">
                            <font>
                               <Font size="14.0" />
                            </font>
@@ -55,7 +55,7 @@
                   </VBox>
                   <VBox alignment="CENTER" prefHeight="50.0" prefWidth="200.0">
                      <children>
-                        <Label styleClass="label-campo" text="Menbro especial">
+                        <Label styleClass="label-campo" text="Membro especial">
                            <font>
                               <Font size="14.0" />
                            </font>

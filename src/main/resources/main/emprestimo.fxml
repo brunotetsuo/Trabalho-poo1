@@ -10,53 +10,50 @@
 
         <HBox alignment="CENTER" spacing="30" styleClass="container-principal">
 
-            <!-- FORMULÁRIO -->
+            <!-- FORMULARIO -->
             <VBox alignment="CENTER" spacing="15" styleClass="formulario">
 
-                <Label styleClass="titulo" text="Empréstimo de Livro" />
+                <Label styleClass="titulo" text="Emprestimo" />
 
                 <!-- Busca -->
                 <VBox alignment="CENTER_LEFT" spacing="5" styleClass="campo">
-                    <Label styleClass="label" text="Pesquisar Livro:" />
-                    <TextField fx:id="livroField" onKeyReleased="#buscarLivro" promptText="Digite o nome do livro" styleClass="input" />
+                    <Label styleClass="label" text="Pesquisar Acervo:" />
+                    <TextField fx:id="livroField" promptText="Digite o titulo" styleClass="input" />
                 </VBox>
 
-                <!-- Usuário -->
+                <!-- Usuario -->
                 <VBox alignment="CENTER_LEFT" spacing="5" styleClass="campo">
-                    <Label styleClass="label" text="Nome do Usuário:" />
-                    <TextField fx:id="usuarioField" promptText="Digite o nome do usuário" styleClass="input" />
+                    <Label styleClass="label" text="Membro:" />
+                    <TextField fx:id="usuarioField" promptText="Membro logado" styleClass="input" />
                 </VBox>
 
-                <!-- Data empréstimo -->
+                <!-- Data emprestimo -->
                 <VBox alignment="CENTER_LEFT" spacing="5" styleClass="campo">
-                    <Label styleClass="label" text="Data do Empréstimo:" />
+                    <Label styleClass="label" text="Data Emprestimo:" />
                     <DatePicker fx:id="dataEmprestimo" styleClass="input" />
                 </VBox>
 
-                <!-- Data devolução -->
+                <!-- Data devolucao -->
                 <VBox alignment="CENTER_LEFT" spacing="5" styleClass="campo">
-                    <Label styleClass="label" text="Data de Devolução:" />
+                    <Label styleClass="label" text="Data Devolucao:" />
                     <DatePicker fx:id="dataDevolucao" styleClass="input" />
                 </VBox>
 
-                <!-- Botão -->
-                <Button onAction="#handleEmprestimo" styleClass="button-emprestimo" text="Registrar Empréstimo" />
-
-                <!-- NOVO BOTÃO -->
-                <Button onAction="#irParaDevolucao"
-                        styleClass="button-emprestimo"
-                        text="Ir para Devolução" />
+                <!-- Botoes -->
+                <Button onAction="#handleEmprestimo" styleClass="button-emprestimo" text="Registrar Emprestimo" />
+                <Button onAction="#irParaDevolucao" styleClass="button-emprestimo" text="Ir para Devolucao" />
             </VBox>
 
             <!-- LISTA -->
             <VBox alignment="CENTER" spacing="10" styleClass="lista-container">
 
-                <Label styleClass="subtitulo" text="Livros Encontrados">
-               <padding>
-                  <Insets bottom="20.0" />
-               </padding></Label>
+                <Label styleClass="subtitulo" text="Itens Disponiveis">
+                    <padding>
+                        <Insets bottom="20.0" />
+                    </padding>
+                </Label>
 
-                <ListView fx:id="listaLivros" prefHeight="400" prefWidth="300" styleClass="lista-livros" />
+                <ListView fx:id="listaAcervos" prefHeight="400" prefWidth="300" styleClass="lista-livros" />
 
             </VBox>
 

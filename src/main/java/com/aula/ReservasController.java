@@ -1,49 +1,68 @@
 package com.aula;
 
-import com.aula.model.BibliotecaDados;
+import com.aula.dao.AcervoDao;
+import com.aula.dao.EmprestimoDao;
+import com.aula.model.Acervo;
 import com.aula.model.Emprestimo;
+import com.aula.model.Membro;
+import com.aula.util.Sessao;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 
 public class ReservasController {
+
     @FXML
     private Label statusMembroLabel;
 
     @FXML
     private ListView<Emprestimo> listaReservados;
 
+    private final EmprestimoDao emprestimoDao = new EmprestimoDao();
+    private final AcervoDao acervoDao = new AcervoDao();
+
     @FXML
     public void initialize() {
-        statusMembroLabel.setText("Status de membro: " + BibliotecaDados.getTipoMembroUsuarioLogado());
+        Membro membro = Sessao.getMembroLogado();
+        if (membro != null) {
+            statusMembroLabel.setText("Status: " + ("E".equals(membro.getTipoMembro()) ? "Especial" : "Comum"));
+        }
         atualizarLista();
     }
 
     @FXML
     public void devolverLivro(ActionEvent actionEvent) {
         Emprestimo emprestimo = listaReservados.getSelectionModel().getSelectedItem();
-
         if (emprestimo == null) {
-            mostrarAlerta("Selecione um livro emprestado para devolver.");
+            mostrarAlerta("Selecione um emprestimo para devolver.");
             return;
         }
 
-        BibliotecaDados.devolver(emprestimo);
+        emprestimo.setStatusAtivo(0);
+        emprestimoDao.salvar(emprestimo);
+
+        Acervo acervo = emprestimo.getItemEmprestado();
+        if (acervo != null) {
+            acervo.setStatusEmprestimo(0);
+            acervoDao.salvar(acervo);
+        }
+
         atualizarLista();
-        mostrarAlerta("Livro devolvido com sucesso.");
+        mostrarAlerta("Devolucao realizada com sucesso!");
     }
 
     private void atualizarLista() {
-        listaReservados.getItems().setAll(BibliotecaDados.listarEmprestimosDoUsuarioLogado());
+        Membro membro = Sessao.getMembroLogado();
+        if (membro != null) {
+            listaReservados.getItems().setAll(emprestimoDao.buscarAtivosPorMembro(membro.getId()));
+        }
     }
 
-    private void mostrarAlerta(String mensagem) {
+    private void mostrarAlerta(String msg) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Reservas");
         alert.setHeaderText(null);
-        alert.setContentText(mensagem);
+        alert.setContentText(msg);
         alert.showAndWait();
     }
 }

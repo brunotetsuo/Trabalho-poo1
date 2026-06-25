@@ -3,18 +3,22 @@
 
     <persistence-unit name="meuPU">
 
-        <class>com.aula.model.Usuario</class>
+        <class>com.aula.model.Membro</class>
+        <class>com.aula.model.Acervo</class>
+        <class>com.aula.model.AcervoAutor</class>
+        <class>com.aula.model.Emprestimo</class>
+        <class>com.aula.model.Reserva</class>
 
         <properties>
-            <property name="jakarta.persistence.jdbc.url" value="jdbc:h2:./banco;AUTO_SERVER=TRUE"/>
-            <property name="jakarta.persistence.jdbc.user" value="sa"/>
-            <property name="jakarta.persistence.jdbc.password" value=""/>
-            <property name="jakarta.persistence.jdbc.driver" value="org.h2.Driver"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:firebirdsql://localhost:3050/C:/BIBLIOTECA.FDB"/>
+            <property name="jakarta.persistence.jdbc.user" value="SYSDBA"/>
+            <property name="jakarta.persistence.jdbc.password" value="masterkey"/>
+            <property name="jakarta.persistence.jdbc.driver" value="org.firebirdsql.jdbc.FBDriver"/>
 
-            <!-- cria tabela automaticamente -->
-            <property name="hibernate.hbm2ddl.auto" value="update"/>
-
+            <property name="hibernate.dialect" value="org.hibernate.community.dialect.FirebirdDialect"/>
+            <property name="hibernate.hbm2ddl.auto" value="none"/>
             <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
         </properties>
 
     </persistence-unit>

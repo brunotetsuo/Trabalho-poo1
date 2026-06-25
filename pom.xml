@@ -22,11 +22,11 @@
             <version>6.4.4.Final</version>
         </dependency>
 
-        <!-- Firebird Database -->
+        <!-- Firebird Database (Jaybird 4.x para Firebird 2.5) -->
         <dependency>
             <groupId>org.firebirdsql.jdbc</groupId>
             <artifactId>jaybird</artifactId>
-            <version>5.0.6.java11</version>
+            <version>4.0.8.java11</version>
         </dependency>
 
         <!-- Hibernate dialects not bundled in hibernate-core -->
@@ -34,14 +34,6 @@
             <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-community-dialects</artifactId>
             <version>6.4.4.Final</version>
-        </dependency>
-
-        <!-- H2 Database -->
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>2.2.224</version>
-            <scope>runtime</scope>
         </dependency>
 
         <!-- JPA API -->
@@ -169,7 +161,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.aula.trabalho/com.aula.trabalho.HelloApplication</mainClass>
+                            <mainClass>com.aula/com.aula.Main</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>

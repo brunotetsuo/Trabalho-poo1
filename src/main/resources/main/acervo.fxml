@@ -9,9 +9,9 @@
             fx:controller="com.aula.AcervoController"
             styleClass="root">
 
-    <!-- TÍTULO -->
+    <!-- TITULO -->
     <top>
-        <Label text="Acervo de Livros"
+        <Label text="Acervo"
                styleClass="titulo"
                BorderPane.alignment="CENTER">
             <padding>
@@ -20,25 +20,25 @@
         </Label>
     </top>
 
-    <!-- CONTEÚDO -->
+    <!-- CONTEUDO -->
     <center>
 
         <VBox alignment="CENTER" spacing="20">
 
             <!-- BUSCA -->
             <TextField fx:id="buscaField"
-                       promptText="Pesquisar livro..."
+                       promptText="Pesquisar..."
                        onKeyReleased="#buscarLivro"
                        maxWidth="300"/>
 
             <!-- LISTA -->
-            <ListView fx:id="listaLivros"
+            <ListView fx:id="listaAcervos"
                       prefWidth="400"
                       prefHeight="400"
                       styleClass="lista-livros"/>
 
-            <!-- BOTÃO (opcional) -->
-            <Button text="Selecionar Livro"
+            <!-- BOTAO -->
+            <Button text="Selecionar"
                     onAction="#selecionarLivro"
                     styleClass="button-emprestimo"/>
 

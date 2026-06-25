@@ -1,23 +1,24 @@
 package com.aula;
 
-import com.aula.model.BibliotecaDados;
+import com.aula.dao.AcervoDao;
+import com.aula.dao.EmprestimoDao;
+import com.aula.model.Acervo;
 import com.aula.model.Emprestimo;
-import com.aula.model.Livro;
+import com.aula.model.Membro;
+import com.aula.util.Sessao;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
-import javafx.scene.input.KeyEvent;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.time.temporal.ChronoUnit;
+import java.util.Date;
 
 public class EmprestimoController {
+
     @FXML
     private TextField livroField;
 
@@ -31,81 +32,86 @@ public class EmprestimoController {
     private DatePicker dataDevolucao;
 
     @FXML
-    private ListView<Livro> listaLivros;
+    private ListView<Acervo> listaAcervos;
+
+    private final AcervoDao acervoDao = new AcervoDao();
+    private final EmprestimoDao emprestimoDao = new EmprestimoDao();
 
     @FXML
     public void initialize() {
-        Livro livroSelecionado = BibliotecaDados.getLivroSelecionado();
-        String nomeUsuarioLogado = BibliotecaDados.getNomeUsuarioLogado();
-
-        if (!nomeUsuarioLogado.isEmpty()) {
-            usuarioField.setText(nomeUsuarioLogado);
+        Membro membroLogado = Sessao.getMembroLogado();
+        if (membroLogado != null) {
+            usuarioField.setText(membroLogado.getNomeCompleto());
+            usuarioField.setEditable(false);
         }
+        listaAcervos.getItems().setAll(acervoDao.buscarTodos());
 
-        if (livroSelecionado != null) {
-            livroField.setText(livroSelecionado.getTitulo());
-            listaLivros.getItems().setAll(livroSelecionado);
-            listaLivros.getSelectionModel().select(livroSelecionado);
-        } else {
-            listaLivros.getItems().setAll(BibliotecaDados.listarLivros());
-        }
-
-        listaLivros.getSelectionModel().selectedItemProperty().addListener((observable, livroAntigo, livro) -> {
-            if (livro != null) {
-                livroField.setText(livro.getTitulo());
+        listaAcervos.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                livroField.setText(newVal.getTitulo());
             }
         });
     }
 
     @FXML
     public void handleEmprestimo(ActionEvent actionEvent) {
-        Livro livro = listaLivros.getSelectionModel().getSelectedItem();
-
-        if (livro == null) {
-            mostrarAlerta("Selecione um livro em Livros Encontrados.");
+        Acervo acervo = listaAcervos.getSelectionModel().getSelectedItem();
+        if (acervo == null) {
+            mostrarAlerta("Selecione um item no acervo.");
             return;
         }
 
-        if (!livro.isDisponivel()) {
-            mostrarAlerta("Este livro ja esta indisponivel.");
+        if (acervo.getStatusEmprestimo() != null && acervo.getStatusEmprestimo() == 1) {
+            mostrarAlerta("Este item ja esta emprestado.");
             return;
         }
 
-        if (usuarioField.getText() == null || usuarioField.getText().trim().isEmpty()) {
-            mostrarAlerta("Informe o nome do usuario.");
+        Membro membro = Sessao.getMembroLogado();
+        if (membro == null) {
+            mostrarAlerta("Nenhum membro logado.");
+            return;
+        }
+
+        if (membro.isPunido()) {
+            mostrarAlerta("Membro esta punido e nao pode realizar emprestimos.");
+            return;
+        }
+
+        long emprestimosAtivos = emprestimoDao.contarAtivosPorMembro(membro.getId());
+        if (emprestimosAtivos >= membro.getLimiteEmprestimos()) {
+            mostrarAlerta("Limite de emprestimos atingido (" + membro.getLimiteEmprestimos() + ").");
             return;
         }
 
         if (dataEmprestimo.getValue() == null || dataDevolucao.getValue() == null) {
-            mostrarAlerta("Informe a data de emprestimo e a data de devolucao.");
+            mostrarAlerta("Informe as datas de emprestimo e devolucao.");
             return;
         }
 
-        long diasEmprestimo = ChronoUnit.DAYS.between(dataEmprestimo.getValue(), dataDevolucao.getValue());
-        String tipoMembro = BibliotecaDados.getTipoMembroUsuarioLogado();
-        int limiteDias = "ESPECIAL".equalsIgnoreCase(tipoMembro) ? 30 : 15;
-
-        if (diasEmprestimo < 1) {
-            mostrarAlerta("A data de devolucao deve ser depois da data de emprestimo.");
+        long dias = ChronoUnit.DAYS.between(dataEmprestimo.getValue(), dataDevolucao.getValue());
+        if (dias < 1) {
+            mostrarAlerta("A data de devolucao deve ser posterior a data de emprestimo.");
             return;
         }
 
-        if (diasEmprestimo > limiteDias) {
-            mostrarAlerta("Membro " + tipoMembro + " pode pegar livro por no maximo " + limiteDias + " dias.");
+        int limiteDias = "E".equals(membro.getTipoMembro()) ? 30 : 15;
+        if (dias > limiteDias) {
+            mostrarAlerta("Membro " + membro.getTipoMembro() + " pode pegar por no maximo " + limiteDias + " dias.");
             return;
         }
 
-        Emprestimo emprestimo = new Emprestimo(
-                livro,
-                usuarioField.getText().trim(),
-                tipoMembro,
-                dataEmprestimo.getValue(),
-                dataDevolucao.getValue()
-        );
+        Emprestimo emp = new Emprestimo();
+        emp.setUsuario(membro);
+        emp.setItemEmprestado(acervo);
+        emp.setDataExpiracao(Date.from(dataDevolucao.getValue().atStartOfDay().toInstant(java.time.ZoneOffset.UTC)));
+        emp.registrar();
 
-        BibliotecaDados.registrarEmprestimo(emprestimo);
-        listaLivros.refresh();
-        mostrarAlerta("Emprestimo registrado. O livro ficou indisponivel.");
+        acervo.setStatusEmprestimo(1);
+
+        emprestimoDao.salvar(emp);
+        acervoDao.salvar(acervo);
+
+        mostrarAlerta("Emprestimo registrado com sucesso!");
         limparCampos();
     }
 
@@ -115,7 +121,6 @@ public class EmprestimoController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/main/devolucao.fxml"));
             Scene scene = new Scene(loader.load());
             scene.getStylesheets().add(getClass().getResource("/main/devolucao.css").toExternalForm());
-
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             stage.setScene(scene);
             stage.show();
@@ -125,27 +130,20 @@ public class EmprestimoController {
         }
     }
 
-    @FXML
-    public void buscarLivro(KeyEvent keyEvent) {
-        listaLivros.getItems().setAll(BibliotecaDados.buscarLivros(livroField.getText()));
-    }
-
     private void limparCampos() {
-        BibliotecaDados.setLivroSelecionado(null);
         livroField.clear();
-        usuarioField.clear();
         dataEmprestimo.setValue(null);
         dataDevolucao.setValue(null);
-        listaLivros.getSelectionModel().clearSelection();
-        listaLivros.getItems().setAll(BibliotecaDados.listarLivros());
+        listaAcervos.getSelectionModel().clearSelection();
+        listaAcervos.getItems().setAll(acervoDao.buscarTodos());
         livroField.requestFocus();
     }
 
-    private void mostrarAlerta(String mensagem) {
+    private void mostrarAlerta(String msg) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Emprestimo");
         alert.setHeaderText(null);
-        alert.setContentText(mensagem);
+        alert.setContentText(msg);
         alert.showAndWait();
     }
 }
