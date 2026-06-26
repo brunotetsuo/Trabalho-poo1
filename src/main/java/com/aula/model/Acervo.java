@@ -7,7 +7,8 @@ import jakarta.persistence.*;
 public class Acervo {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GEN_ACERVO_ID")
+    @SequenceGenerator(name = "GEN_ACERVO_ID", sequenceName = "GEN_ACERVO_ID", allocationSize = 1)
     @Column(name = "ID")
     private Integer id;
 
@@ -112,6 +113,9 @@ public class Acervo {
 
     @Override
     public String toString() {
-        return titulo + " (" + tipoAcervo + ")";
+        String statusEmp = (statusEmprestimo != null && statusEmprestimo == 1) ? "Emprestado" : "Disponivel";
+        String statusRes = (statusReserva != null && statusReserva == 1) ? "Reservado" : "";
+        String status = statusRes.isEmpty() ? statusEmp : statusEmp + " | " + statusRes;
+        return titulo + " (" + tipoAcervo + ") - " + status;
     }
 }

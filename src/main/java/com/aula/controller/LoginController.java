@@ -1,7 +1,7 @@
-package com.aula;
+package com.aula.controller;
 
-import com.aula.dao.MembroDao;
 import com.aula.model.Membro;
+import com.aula.service.MembroService;
 import com.aula.util.Sessao;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -22,7 +22,7 @@ public class LoginController {
     @FXML
     private Label mensagem;
 
-    private final MembroDao membroDao = new MembroDao();
+    private final MembroService membroService = new MembroService();
 
     @FXML
     public void fazerLogin() {
@@ -34,7 +34,7 @@ public class LoginController {
             return;
         }
 
-        Optional<Membro> membro = membroDao.buscarPorLoginESenha(login, senha);
+        Optional<Membro> membro = membroService.buscarPorLoginESenha(login, senha);
 
         if (membro.isPresent()) {
             Sessao.setMembroLogado(membro.get());
@@ -48,9 +48,9 @@ public class LoginController {
     private void abrirMenu() {
         try {
             Stage stage = (Stage) usuarioField.getScene().getWindow();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/main/menu.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/menu.fxml"));
             Scene scene = new Scene(loader.load());
-            scene.getStylesheets().add(getClass().getResource("/main/menu.css").toExternalForm());
+            scene.getStylesheets().add(getClass().getResource("/css/menu.css").toExternalForm());
             stage.setScene(scene);
             stage.show();
         } catch (Exception e) {
@@ -62,9 +62,9 @@ public class LoginController {
     private void linkCadastro() {
         try {
             Stage stage = (Stage) usuarioField.getScene().getWindow();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/main/registro.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/registro.fxml"));
             Scene scene = new Scene(loader.load());
-            scene.getStylesheets().add(getClass().getResource("/main/registro.css").toExternalForm());
+            scene.getStylesheets().add(getClass().getResource("/css/registro.css").toExternalForm());
             stage.setScene(scene);
             stage.show();
         } catch (Exception e) {

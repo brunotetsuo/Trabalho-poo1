@@ -13,9 +13,9 @@
         @Override
         public void start(Stage stage) throws Exception {
             FXMLLoader fxmlLoader = new
-                    FXMLLoader(getClass().getResource("/main/login.fxml"));
+                    FXMLLoader(getClass().getResource("/fxml/login.fxml"));
             Scene scene = new Scene(fxmlLoader.load(), 1000, 800);
-            scene.getStylesheets().add(getClass().getResource("/main/login.css").toExternalForm());
+            scene.getStylesheets().add(getClass().getResource("/css/login.css").toExternalForm());
             stage.setTitle("App Login");
             stage.setScene(scene);
             stage.setWidth(1000);

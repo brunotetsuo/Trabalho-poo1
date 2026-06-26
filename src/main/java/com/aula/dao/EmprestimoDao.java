@@ -12,7 +12,16 @@ public class EmprestimoDao {
     public List<Emprestimo> buscarTodos() {
         EntityManager em = JPAUtil.getEntityManager();
         try {
-            return em.createQuery("SELECT e FROM Emprestimo e", Emprestimo.class).getResultList();
+            return em.createQuery("SELECT e FROM Emprestimo e JOIN FETCH e.usuario JOIN FETCH e.itemEmprestado", Emprestimo.class).getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
+    public List<Emprestimo> buscarAtivos() {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            return em.createQuery("SELECT e FROM Emprestimo e JOIN FETCH e.usuario JOIN FETCH e.itemEmprestado WHERE e.statusAtivo = 1", Emprestimo.class).getResultList();
         } finally {
             em.close();
         }
@@ -22,7 +31,7 @@ public class EmprestimoDao {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             TypedQuery<Emprestimo> query = em.createQuery(
-                "SELECT e FROM Emprestimo e WHERE e.usuario.id = :idMembro AND e.statusAtivo = 1",
+                "SELECT e FROM Emprestimo e JOIN FETCH e.usuario JOIN FETCH e.itemEmprestado WHERE e.usuario.id = :idMembro AND e.statusAtivo = 1",
                 Emprestimo.class
             );
             query.setParameter("idMembro", idMembro);

@@ -1,10 +1,9 @@
-package com.aula;
+package com.aula.controller;
 
-import com.aula.dao.AcervoDao;
-import com.aula.dao.EmprestimoDao;
 import com.aula.model.Acervo;
-import com.aula.model.Emprestimo;
 import com.aula.model.Membro;
+import com.aula.service.EmprestimoService;
+import com.aula.service.ReservaService;
 import com.aula.util.Sessao;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,9 +12,6 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-
-import java.time.temporal.ChronoUnit;
-import java.util.Date;
 
 public class EmprestimoController {
 
@@ -34,8 +30,8 @@ public class EmprestimoController {
     @FXML
     private ListView<Acervo> listaAcervos;
 
-    private final AcervoDao acervoDao = new AcervoDao();
-    private final EmprestimoDao emprestimoDao = new EmprestimoDao();
+    private final EmprestimoService emprestimoService = new EmprestimoService();
+    private final ReservaService reservaService = new ReservaService();
 
     @FXML
     public void initialize() {
@@ -44,7 +40,7 @@ public class EmprestimoController {
             usuarioField.setText(membroLogado.getNomeCompleto());
             usuarioField.setEditable(false);
         }
-        listaAcervos.getItems().setAll(acervoDao.buscarTodos());
+        listaAcervos.getItems().setAll(emprestimoService.buscarItensDisponiveis());
 
         listaAcervos.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
@@ -61,25 +57,9 @@ public class EmprestimoController {
             return;
         }
 
-        if (acervo.getStatusEmprestimo() != null && acervo.getStatusEmprestimo() == 1) {
-            mostrarAlerta("Este item ja esta emprestado.");
-            return;
-        }
-
         Membro membro = Sessao.getMembroLogado();
         if (membro == null) {
             mostrarAlerta("Nenhum membro logado.");
-            return;
-        }
-
-        if (membro.isPunido()) {
-            mostrarAlerta("Membro esta punido e nao pode realizar emprestimos.");
-            return;
-        }
-
-        long emprestimosAtivos = emprestimoDao.contarAtivosPorMembro(membro.getId());
-        if (emprestimosAtivos >= membro.getLimiteEmprestimos()) {
-            mostrarAlerta("Limite de emprestimos atingido (" + membro.getLimiteEmprestimos() + ").");
             return;
         }
 
@@ -88,39 +68,37 @@ public class EmprestimoController {
             return;
         }
 
-        long dias = ChronoUnit.DAYS.between(dataEmprestimo.getValue(), dataDevolucao.getValue());
-        if (dias < 1) {
-            mostrarAlerta("A data de devolucao deve ser posterior a data de emprestimo.");
-            return;
+        try {
+            emprestimoService.realizarEmprestimo(membro, acervo,
+                    dataEmprestimo.getValue(), dataDevolucao.getValue());
+            mostrarAlerta("Emprestimo registrado com sucesso!");
+            limparCampos();
+        } catch (IllegalStateException e) {
+            if (e.getMessage().contains("ja esta emprestado") && !reservaService.temReservaAtiva(acervo)) {
+                Alert confirmacao = new Alert(Alert.AlertType.CONFIRMATION);
+                confirmacao.setTitle("Item Indisponivel");
+                confirmacao.setHeaderText(null);
+                confirmacao.setContentText("Este item ja esta emprestado. Deseja fazer uma reserva?");
+                if (confirmacao.showAndWait().get() == ButtonType.OK) {
+                    try {
+                        reservaService.criarReserva(membro, acervo);
+                        mostrarAlerta("Reserva realizada com sucesso!");
+                    } catch (Exception ex) {
+                        mostrarAlerta(ex.getMessage());
+                    }
+                }
+            } else {
+                mostrarAlerta(e.getMessage());
+            }
         }
-
-        int limiteDias = "E".equals(membro.getTipoMembro()) ? 30 : 15;
-        if (dias > limiteDias) {
-            mostrarAlerta("Membro " + membro.getTipoMembro() + " pode pegar por no maximo " + limiteDias + " dias.");
-            return;
-        }
-
-        Emprestimo emp = new Emprestimo();
-        emp.setUsuario(membro);
-        emp.setItemEmprestado(acervo);
-        emp.setDataExpiracao(Date.from(dataDevolucao.getValue().atStartOfDay().toInstant(java.time.ZoneOffset.UTC)));
-        emp.registrar();
-
-        acervo.setStatusEmprestimo(1);
-
-        emprestimoDao.salvar(emp);
-        acervoDao.salvar(acervo);
-
-        mostrarAlerta("Emprestimo registrado com sucesso!");
-        limparCampos();
     }
 
     @FXML
     public void irParaDevolucao(ActionEvent actionEvent) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/main/devolucao.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/devolucao.fxml"));
             Scene scene = new Scene(loader.load());
-            scene.getStylesheets().add(getClass().getResource("/main/devolucao.css").toExternalForm());
+            scene.getStylesheets().add(getClass().getResource("/css/devolucao.css").toExternalForm());
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             stage.setScene(scene);
             stage.show();
@@ -130,12 +108,26 @@ public class EmprestimoController {
         }
     }
 
+    @FXML
+    private void irParaMenu(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/menu.fxml"));
+            Scene scene = new Scene(loader.load());
+            scene.getStylesheets().add(getClass().getResource("/css/menu.css").toExternalForm());
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            stage.setScene(scene);
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void limparCampos() {
         livroField.clear();
         dataEmprestimo.setValue(null);
         dataDevolucao.setValue(null);
         listaAcervos.getSelectionModel().clearSelection();
-        listaAcervos.getItems().setAll(acervoDao.buscarTodos());
+        listaAcervos.getItems().setAll(emprestimoService.buscarItensDisponiveis());
         livroField.requestFocus();
     }
 

@@ -1,14 +1,12 @@
-package com.aula;
+package com.aula.controller;
 
-import com.aula.dao.MembroDao;
 import com.aula.model.Membro;
+import com.aula.service.MembroService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-
-import java.util.Optional;
 
 public class RegistroController {
 
@@ -33,15 +31,15 @@ public class RegistroController {
     @FXML
     private RadioButton membroEspecialRadio;
 
-    private final MembroDao membroDao = new MembroDao();
+    private final MembroService membroService = new MembroService();
 
     @FXML
     private void irParaLogin() {
         try {
             Stage stage = (Stage) linkLogin.getScene().getWindow();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/main/login.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/login.fxml"));
             Scene scene = new Scene(loader.load());
-            scene.getStylesheets().add(getClass().getResource("/main/login.css").toExternalForm());
+            scene.getStylesheets().add(getClass().getResource("/css/login.css").toExternalForm());
             stage.setScene(scene);
             stage.show();
         } catch (Exception e) {
@@ -62,26 +60,14 @@ public class RegistroController {
             return;
         }
 
-        Optional<Membro> existente = membroDao.buscarPorLogin(loginField.getText());
-        if (existente.isPresent()) {
-            mostrarErro("Login ja cadastrado!");
-            return;
-        }
-
-        Membro membro = new Membro();
-        membro.setNomeCompleto(nomeField.getText());
-        membro.setLogin(loginField.getText());
-        membro.setSenha(senhaField.getText());
-        membro.setPunido(false);
-
-        boolean especial = membroEspecialRadio.isSelected();
-        membro.setTipoMembro(especial ? "E" : "C");
-        membro.setLimiteEmprestimos(especial ? 5 : 3);
-
         try {
-            membroDao.salvar(membro);
+            String tipoMembro = membroEspecialRadio.isSelected() ? "E" : "C";
+            membroService.cadastrar(nomeField.getText(), loginField.getText(),
+                    senhaField.getText(), tipoMembro);
             mostrarSucesso("Membro cadastrado com sucesso!");
             limparCampos();
+        } catch (IllegalStateException e) {
+            mostrarErro(e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
             mostrarErro("Erro ao cadastrar membro!");

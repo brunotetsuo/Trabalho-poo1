@@ -10,7 +10,7 @@
         <class>com.aula.model.Reserva</class>
 
         <properties>
-            <property name="jakarta.persistence.jdbc.url" value="jdbc:firebirdsql://localhost:3050/C:/BIBLIOTECA.FDB"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:firebirdsql://localhost:3050/D:/Ciencia da computacao/Programacao orientado a objetos 1/Trabalho-poo1/BIBLIOTECA.FDB"/>
             <property name="jakarta.persistence.jdbc.user" value="SYSDBA"/>
             <property name="jakarta.persistence.jdbc.password" value="masterkey"/>
             <property name="jakarta.persistence.jdbc.driver" value="org.firebirdsql.jdbc.FBDriver"/>

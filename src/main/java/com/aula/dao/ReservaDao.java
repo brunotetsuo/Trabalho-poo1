@@ -12,7 +12,7 @@ public class ReservaDao {
     public List<Reserva> buscarTodos() {
         EntityManager em = JPAUtil.getEntityManager();
         try {
-            return em.createQuery("SELECT r FROM Reserva r", Reserva.class).getResultList();
+            return em.createQuery("SELECT r FROM Reserva r JOIN FETCH r.usuarioInteressado JOIN FETCH r.material", Reserva.class).getResultList();
         } finally {
             em.close();
         }
@@ -22,7 +22,7 @@ public class ReservaDao {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             TypedQuery<Reserva> query = em.createQuery(
-                "SELECT r FROM Reserva r WHERE r.usuarioInteressado.id = :idMembro AND r.statusAtivo = 1",
+                "SELECT r FROM Reserva r JOIN FETCH r.usuarioInteressado JOIN FETCH r.material WHERE r.usuarioInteressado.id = :idMembro AND r.statusAtivo = 1",
                 Reserva.class
             );
             query.setParameter("idMembro", idMembro);
@@ -37,6 +37,20 @@ public class ReservaDao {
         try {
             Reserva res = em.find(Reserva.class, id);
             return Optional.ofNullable(res);
+        } finally {
+            em.close();
+        }
+    }
+
+    public Optional<Reserva> buscarAtivaPorAcervo(int idAcervo) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            TypedQuery<Reserva> query = em.createQuery(
+                "SELECT r FROM Reserva r JOIN FETCH r.usuarioInteressado JOIN FETCH r.material WHERE r.material.id = :idAcervo AND r.statusAtivo = 1",
+                Reserva.class
+            );
+            query.setParameter("idAcervo", idAcervo);
+            return query.getResultStream().findFirst();
         } finally {
             em.close();
         }

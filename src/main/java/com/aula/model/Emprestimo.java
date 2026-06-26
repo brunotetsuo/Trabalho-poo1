@@ -8,7 +8,8 @@ import java.util.Date;
 public class Emprestimo implements Transacao {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GEN_EMPRESTIMO_ID")
+    @SequenceGenerator(name = "GEN_EMPRESTIMO_ID", sequenceName = "GEN_EMPRESTIMO_ID", allocationSize = 1)
     @Column(name = "ID")
     private Integer id;
 

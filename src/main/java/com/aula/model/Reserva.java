@@ -7,7 +7,8 @@ import jakarta.persistence.*;
 public class Reserva implements Transacao {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GEN_RESERVA_ID")
+    @SequenceGenerator(name = "GEN_RESERVA_ID", sequenceName = "GEN_RESERVA_ID", allocationSize = 1)
     @Column(name = "ID")
     private Integer id;
 

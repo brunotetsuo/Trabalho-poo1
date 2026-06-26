@@ -1,0 +1,49 @@
+.root{
+    -fx-background-image: url("/imagens/registro.png");
+    -fx-background-size: cover;
+}
+
+.vbox {
+    -fx-background-color: rgba(0, 0, 0, 0.4);
+    -fx-background-radius: 20;
+}
+
+.titulo {
+    -fx-font-size: 28;
+    -fx-text-fill: white;
+}
+.label-campo {
+    -fx-font-size: 14;
+    -fx-text-fill: white;
+}
+
+.campo {
+    -fx-font-size: 14;
+    -fx-background-color: black;
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: white;
+    -fx-background-radius: 20;
+    -fx-padding: 10;
+}
+
+.botao-registro {
+    -fx-font-size: 14;
+    -fx-text-fill: white;
+    -fx-background-radius: 20;
+    -fx-background-color: black;
+    -fx-cursor: hand;
+}
+
+.botao-registro:hover {
+    -fx-text-fill: green;
+}
+
+.label-link {
+    -fx-font-size: 16;
+    -fx-cursor: hand;
+    -fx-text-fill: white;
+}
+
+.label-link:hover {
+    -fx-text-fill: red;
+}
