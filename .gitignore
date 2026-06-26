@@ -5,6 +5,13 @@ target/
 .kotlin
 .skill
 
+### Database ###
+BIBLIOTECA.FDB
+banco.mv.db
+
+### MiMoCode ###
+.mimocode/
+
 ### IntelliJ IDEA ###
 .idea/modules.xml
 .idea/jarRepositories.xml
