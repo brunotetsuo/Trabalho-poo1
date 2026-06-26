@@ -5,10 +5,6 @@ target/
 .kotlin
 .skill
 
-### Database ###
-BIBLIOTECA.FDB
-banco.mv.db
-
 ### MiMoCode ###
 .mimocode/
 
